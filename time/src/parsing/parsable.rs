@@ -498,9 +498,13 @@ impl sealed::Sealed for Rfc3339 {
         let input = exactly_n_digits::<2, _>(input)
             .and_then(|item| item.consume_value(|value| parsed.set_day(value)))
             .ok_or(InvalidComponent("day"))?;
-        let input = ascii_char_ignore_case::<b'T'>(input)
-            .ok_or(InvalidLiteral)?
-            .into_inner();
+        let input = {
+            let mut result = ascii_char_ignore_case::<b'T'>(input);
+            if let None = result {
+                result = ascii_char::<b' '>(input)
+            };
+            result
+        }.ok_or(InvalidLiteral)?.into_inner();
         let input = exactly_n_digits::<2, _>(input)
             .and_then(|item| item.consume_value(|value| parsed.set_hour_24(value)))
             .ok_or(InvalidComponent("hour"))?;
@@ -595,9 +599,13 @@ impl sealed::Sealed for Rfc3339 {
         let input = dash(input).ok_or(InvalidLiteral)?.into_inner();
         let ParsedItem(input, day) =
             exactly_n_digits::<2, _>(input).ok_or(InvalidComponent("day"))?;
-        let input = ascii_char_ignore_case::<b'T'>(input)
-            .ok_or(InvalidLiteral)?
-            .into_inner();
+        let input = {
+            let mut result = ascii_char_ignore_case::<b'T'>(input);
+            if let None = result {
+                result = ascii_char::<b' '>(input)
+            };
+            result
+        }.ok_or(InvalidLiteral)?.into_inner();
         let ParsedItem(input, hour) =
             exactly_n_digits::<2, _>(input).ok_or(InvalidComponent("hour"))?;
         let input = colon(input).ok_or(InvalidLiteral)?.into_inner();

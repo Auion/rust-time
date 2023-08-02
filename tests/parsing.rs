@@ -233,6 +233,10 @@ fn rfc_2822_err() {
 #[test]
 fn rfc_3339() -> time::Result<()> {
     assert_eq!(
+        OffsetDateTime::parse("2021-01-02 03:04:05Z", &Rfc3339)?,
+        datetime!(2021-01-02 03:04:05 UTC),
+    );
+    assert_eq!(
         OffsetDateTime::parse("2021-01-02T03:04:05Z", &Rfc3339)?,
         datetime!(2021-01-02 03:04:05 UTC),
     );
