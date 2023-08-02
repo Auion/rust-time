@@ -163,6 +163,14 @@ pub(crate) const fn any_digit(input: &[u8]) -> Option<ParsedItem<'_, u8>> {
     }
 }
 
+// Consume exactly one character.
+pub(crate) fn any_char(input: &[u8]) -> Option<ParsedItem<'_, ()>> {
+    match input {
+        [_c, remaining @ ..] => Some(ParsedItem(remaining, ())),
+        _ => None,
+    }
+}
+
 /// Consume exactly one of the provided ASCII characters.
 pub(crate) fn ascii_char<const CHAR: u8>(input: &[u8]) -> Option<ParsedItem<'_, ()>> {
     debug_assert!(CHAR.is_ascii_graphic() || CHAR.is_ascii_whitespace());

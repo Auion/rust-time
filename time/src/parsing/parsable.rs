@@ -480,7 +480,7 @@ impl sealed::Sealed for Rfc3339 {
     ) -> Result<&'a [u8], error::Parse> {
         use crate::error::ParseFromDescription::{InvalidComponent, InvalidLiteral};
         use crate::parsing::combinator::{
-            any_digit, ascii_char, ascii_char_ignore_case, exactly_n_digits, sign,
+            any_digit, any_char, ascii_char, ascii_char_ignore_case, exactly_n_digits, sign,
         };
 
         let dash = ascii_char::<b'-'>;
@@ -498,7 +498,7 @@ impl sealed::Sealed for Rfc3339 {
         let input = exactly_n_digits::<2, _>(input)
             .and_then(|item| item.consume_value(|value| parsed.set_day(value)))
             .ok_or(InvalidComponent("day"))?;
-        let input = ascii_char_ignore_case::<b'T'>(input)
+        let input = any_char(input)
             .ok_or(InvalidLiteral)?
             .into_inner();
         let input = exactly_n_digits::<2, _>(input)
@@ -581,7 +581,7 @@ impl sealed::Sealed for Rfc3339 {
     fn parse_date_time<O: MaybeOffset>(&self, input: &[u8]) -> Result<DateTime<O>, error::Parse> {
         use crate::error::ParseFromDescription::{InvalidComponent, InvalidLiteral};
         use crate::parsing::combinator::{
-            any_digit, ascii_char, ascii_char_ignore_case, exactly_n_digits, sign,
+            any_digit, any_char, ascii_char, ascii_char_ignore_case, exactly_n_digits, sign,
         };
 
         let dash = ascii_char::<b'-'>;
@@ -595,7 +595,7 @@ impl sealed::Sealed for Rfc3339 {
         let input = dash(input).ok_or(InvalidLiteral)?.into_inner();
         let ParsedItem(input, day) =
             exactly_n_digits::<2, _>(input).ok_or(InvalidComponent("day"))?;
-        let input = ascii_char_ignore_case::<b'T'>(input)
+        let input = any_char(input)
             .ok_or(InvalidLiteral)?
             .into_inner();
         let ParsedItem(input, hour) =

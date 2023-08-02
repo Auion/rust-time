@@ -233,6 +233,14 @@ fn rfc_2822_err() {
 #[test]
 fn rfc_3339() -> time::Result<()> {
     assert_eq!(
+        OffsetDateTime::parse("2023-08-01 18:16:42Z", &Rfc3339)?,
+        datetime!(2023-08-01 18:16:42 UTC),
+    );
+    assert_eq!(
+        OffsetDateTime::parse("2023-08-01_18:16:42Z", &Rfc3339)?,
+        datetime!(2023-08-01 18:16:42 UTC),
+    );
+    assert_eq!(
         OffsetDateTime::parse("2021-01-02T03:04:05Z", &Rfc3339)?,
         datetime!(2021-01-02 03:04:05 UTC),
     );
@@ -353,10 +361,6 @@ fn rfc_3339_err() {
         invalid_component!("day")
     ));
     assert!(matches!(
-        PrimitiveDateTime::parse("2021-01-01x", &Rfc3339),
-        invalid_literal!()
-    ));
-    assert!(matches!(
         PrimitiveDateTime::parse("2021-01-01T0", &Rfc3339),
         invalid_component!("hour")
     ));
@@ -443,10 +447,6 @@ fn rfc_3339_err() {
     assert!(matches!(
         OffsetDateTime::parse("2021-01-0", &Rfc3339),
         invalid_component!("day")
-    ));
-    assert!(matches!(
-        OffsetDateTime::parse("2021-01-01x", &Rfc3339),
-        invalid_literal!()
     ));
     assert!(matches!(
         OffsetDateTime::parse("2021-01-01T0", &Rfc3339),
